@@ -4,7 +4,7 @@ const settingsTarget = $('#app-settings [name=target]');
 
 const SAMPLE = `Welcome. Paste your own writing here, or type over this text.
 
-The marks show what to fix. A sentence with a strong green tint is tangled, and you should split it up, because a sentence that strings together an extraordinarily large number of long, complicated words and clauses tends to exhaust readers before they ever reach the full stop.
+The marks show what to fix. Tangled sentences get a strong green tint and a solid line, and you should split them up, because a sentence that strings together an extraordinarily large number of long, complicated words and clauses tends to exhaust readers before they ever reach the full stop.
 
 A sentence with a pale green tint and a dotted underline is heavy, though not hopeless, since it asks your reader to hold several separate ideas at once.
 
@@ -71,7 +71,8 @@ function analyze() {
   fit();
   const g = result.grade;
   $('.p-level-n').textContent = g == null ? 'Reading level —' : `Reading level ${g}`;
-  $('.p-chip').textContent = g == null ? 'Empty' : g <= s.target ? 'Clear' : g <= s.target + 2 ? 'Fair' : 'Dense';
+  const verdict = g == null ? 'Empty' : g <= s.target ? 'Clear' : g <= s.target + 2 ? 'Fair' : 'Dense';
+  Object.assign($('.p-chip'), { textContent: verdict }).dataset.v = verdict.toLowerCase();
   $('.p-words').textContent = `${st.words} ${plural(st.words, 'word', 'words')}`;
   const secs = st.readingSeconds, rt = `${Math.floor(secs / 60)}m ${secs % 60}s`;
   $('.p-stats').replaceChildren(...[['Letters', st.letters], ['Characters', st.characters], ['Words', st.words],
@@ -86,7 +87,9 @@ function cursor() {
   const p = box.selectionStart;
   const hit = (result?.marks || []).filter((m) => !s.hidden.includes(ROW_OF[m.kind]) && m.start <= p && p < m.end)
     .sort((a, b) => a.end - a.start - (b.end - b.start))[0];
-  $('.p-tip').textContent = hit ? hit.tip : 'Click into a marked word to see a tip.';
+  const tip = $('.p-tip');
+  tip.textContent = hit ? hit.tip : 'Click into a marked word to see a tip.';
+  tip.classList.toggle('is-on', !!hit);
 }
 
 // Applies state to the page. Hide/focus modes are CSS classes, so no re-analysis needed.
