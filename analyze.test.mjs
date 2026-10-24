@@ -54,4 +54,15 @@ assert.ok(r.marks.length > 0 && r.marks.every(m => 0 <= m.start && m.start < m.e
 assert.ok(r.marks.every((m, i) => !i || r.marks[i - 1].start <= m.start));
 assert.ok(!JSON.stringify(r).includes('NaN'));
 
+r = analyze('Naïvely done.', 9);
+assert.ok(of(r, 'adverb').every(m => 'Naïvely done.'.slice(m.start, m.end) === 'Naïvely'));
+
+t = 'The committee considered the proposal carefully before announcing its decision to everybody today in the city.';
+r = analyze(t, 9);
+assert.equal(r.sentences[0].level, 'hard');
+assert.equal(r.counts.hard, 1);
+assert.equal(r.counts.veryhard, 0);
+
+assert.equal(analyze('Stop! Why? Go.', 9).stats.sentences, 3);
+
 console.log('ok');

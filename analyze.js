@@ -29,20 +29,22 @@
     passive: 'Passive voice: say who does the action.',
     qualifier: 'Qualifier: cut it to sound sure.',
   };
+  // Unicode-aware word edges; \b is ASCII-only.
+  const B = '(?<![\\p{L}\\p{N}])', E = '(?![\\p{L}\\p{N}])';
   const phrases = list => list.map(p => p.replace(/ /g, '\\s+')).join('|');
   // Longer alternatives first so the longest phrase wins.
   const byLen = list => [...list].sort((a, b) => b.length - a.length);
   const RE = {
-    simpler: new RegExp(`\\b(?:${phrases(byLen(Object.keys(SIMPLER)))})\\b`, 'gi'),
-    qualifier: new RegExp(`\\b(?:${phrases(byLen(QUALIFIERS))})\\b`, 'gi'),
-    passive: new RegExp(`\\b(?:is|are|was|were|being|been|be|am)\\s+(?:[a-z]+\\s+)?(?:[a-z]{3,}ed|${IRREGULAR.join('|')})\\b`, 'gi'),
-    adverb: /\b[a-z]{2,}ly\b/gi,
+    simpler: new RegExp(`${B}(?:${phrases(byLen(Object.keys(SIMPLER)))})${E}`, 'giu'),
+    qualifier: new RegExp(`${B}(?:${phrases(byLen(QUALIFIERS))})${E}`, 'giu'),
+    passive: new RegExp(`${B}(?:is|are|was|were|being|been|be|am)\\s+(?:\\p{L}+\\s+)?(?:\\p{L}{3,}ed|${IRREGULAR.join('|')})${E}`, 'giu'),
+    adverb: new RegExp(`${B}\\p{L}{2,}ly${E}`, 'giu'),
   };
   const clamp = n => Math.min(18, Math.max(1, Math.round(n)));
   const ari = (letters, words, sentences) => clamp(4.71 * (letters / words) + 0.5 * (words / sentences) - 21.43);
   const count = (s, re) => (s.match(re) || []).length;
-  const wordsOf = s => count(s, /[A-Za-z0-9'’-]*[A-Za-z0-9][A-Za-z0-9'’-]*/g);
-  const lettersOf = s => count(s, /[A-Za-z0-9]/g);
+  const wordsOf = s => count(s, /[\p{L}\p{N}'’-]*[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu);
+  const lettersOf = s => count(s, /[\p{L}\p{N}]/gu);
 
   function analyze(text, target) {
     const sentences = [];
@@ -83,7 +85,7 @@
     for (const kind of ['simpler', 'passive', 'qualifier', 'adverb']) {
       for (const m of text.matchAll(RE[kind])) {
         const w = m[0];
-        if (kind === 'adverb' && (w.length < 4 || NOT_ADVERB.includes(w.toLowerCase()))) continue;
+        if (kind === 'adverb' && NOT_ADVERB.includes(w.toLowerCase())) continue;
         const tip = kind === 'simpler'
           ? `Simpler word: try '${SIMPLER[w.toLowerCase().replace(/\s+/g, ' ')]}' instead of '${w}'.`
           : TIPS[kind];
