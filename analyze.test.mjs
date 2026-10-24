@@ -65,4 +65,12 @@ assert.equal(r.counts.veryhard, 0);
 
 assert.equal(analyze('Stop! Why? Go.', 9).stats.sentences, 3);
 
+// Code-review fixes: no passive for determiners or -ed non-verbs; quotes and ellipses end sentences; marks stay on one line.
+assert.equal(analyze('It was a hit.', 9).counts.passive, 0);
+assert.equal(analyze('This is indeed true.', 9).counts.passive, 0);
+assert.equal(analyze('It is not done.', 9).counts.passive, 1);
+assert.equal(analyze('He said "Stop." Then he left.', 9).stats.sentences, 2);
+assert.equal(analyze('Wait… what?', 9).stats.sentences, 2);
+for (const m of analyze('We met prior\nto lunch. It was\nmade.', 9).marks) assert.ok(!/\n/.test('We met prior\nto lunch. It was\nmade.'.slice(m.start, m.end)));
+
 console.log('ok');

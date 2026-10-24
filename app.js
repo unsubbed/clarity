@@ -13,7 +13,7 @@ Short sentences are easy. Wavy underlines mark soft spots: -ly words like quickl
 const ROW_OF = { veryhard: 'veryhard', hard: 'hard', adverb: 'soft', passive: 'soft', qualifier: 'soft', simpler: 'simpler' };
 const ROWS = ['veryhard', 'hard', 'soft', 'simpler'];
 let s = { text: '', mode: 'review', hidden: [], target: 9, more: false, edited: false };
-let result = null, timer;
+let result = null, timer, painted = ''; // painted = target + text the backdrop currently shows
 
 const plural = (n, one, many) => (n === 1 ? one : many);
 const countLine = {
@@ -45,8 +45,11 @@ function paint(text, marks) {
 
 // Grow with the text so the backdrop and textarea wrap identically (no inner scrollbar).
 function fit() {
+  const hold = box.parentElement; // holds the page height while measuring, so the scroll position can't jump
+  hold.style.minHeight = hold.offsetHeight + 'px';
   box.style.height = 'auto';
   box.style.height = box.scrollHeight + 'px';
+  hold.style.minHeight = '';
 }
 
 // Keeps only known, well-typed fields from saved or imported state.
@@ -66,6 +69,7 @@ const clean = (o) => {
 function analyze() {
   const text = box.value;
   result = Plainly.analyze(text, s.target);
+  painted = s.target + '\n' + text;
   const { stats: st, counts: c } = result;
   paint(text, result.marks);
   fit();
@@ -106,10 +110,13 @@ function apply() {
   }
   $('#p-stats').hidden = !s.more;
   $('.p-more-btn').setAttribute('aria-expanded', s.more);
-  analyze();
+  if (painted !== s.target + '\n' + box.value) analyze();
+  else cursor(); // hidden kinds changed which tip applies
 }
 
-new ResizeObserver(fit).observe(box);
+// Refit only on width changes; fit() itself changes the height.
+let fitWidth = 0;
+new ResizeObserver(([e]) => { if (e.contentRect.width !== fitWidth) { fitWidth = e.contentRect.width; fit(); } }).observe(box);
 box.addEventListener('input', () => {
   s.text = box.value;
   s.edited = true;

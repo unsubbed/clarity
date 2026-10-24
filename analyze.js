@@ -31,13 +31,17 @@
   };
   // Unicode-aware word edges; \b is ASCII-only.
   const B = '(?<![\\p{L}\\p{N}])', E = '(?![\\p{L}\\p{N}])';
-  const phrases = list => list.map(p => p.replace(/ /g, '\\s+')).join('|');
+  const S = '[^\\S\\r\\n]+'; // spaces within one line, so a mark never crosses a line break
+  const phrases = list => list.map(p => p.replace(/ /g, S)).join('|');
+  const NOT_PARTICIPLE = 'indeed hundred sacred naked wicked kindred rugged ragged wretched beloved speed greed breed bleed exceed proceed succeed embed shred'.split(' ');
+  const DETERMINERS = 'a an the my your his her its our their this that'.split(' ');
   // Longer alternatives first so the longest phrase wins.
   const byLen = list => [...list].sort((a, b) => b.length - a.length);
   const RE = {
     simpler: new RegExp(`${B}(?:${phrases(byLen(Object.keys(SIMPLER)))})${E}`, 'giu'),
     qualifier: new RegExp(`${B}(?:${phrases(byLen(QUALIFIERS))})${E}`, 'giu'),
-    passive: new RegExp(`${B}(?:is|are|was|were|being|been|be|am)\\s+(?:\\p{L}+\\s+)?(?:\\p{L}{3,}ed|${IRREGULAR.join('|')})${E}`, 'giu'),
+    // "was a hit" is not passive: the optional middle word may not be a determiner.
+    passive: new RegExp(`${B}(?:is|are|was|were|being|been|be|am)${S}(?:(?!(?:${DETERMINERS.join('|')})${E})\\p{L}+${S})?(?:(?!(?:${NOT_PARTICIPLE.join('|')})${E})\\p{L}{3,}ed|${IRREGULAR.join('|')})${E}`, 'giu'),
     adverb: new RegExp(`${B}\\p{L}{2,}ly${E}`, 'giu'),
   };
   const clamp = n => Math.min(18, Math.max(1, Math.round(n)));
@@ -60,7 +64,8 @@
         sentences.push({ start, end: start + s.length, grade: ari(letters, w, 1), words: w, letters });
       };
       let from = 0;
-      for (const t of l.matchAll(/[.!?]+(?=\s|$)/g)) {
+      // A closing quote or bracket may follow the end mark: He said "Stop." Then…
+      for (const t of l.matchAll(/[.!?…]+["'”’)\]]*(?=\s|$)/g)) {
         const end = t.index + t[0].length;
         const tok = l.slice(0, end).match(/\S+$/)[0].replace(/^\W+/, '').toLowerCase();
         if (ABBR.has(tok)) continue;
