@@ -23,11 +23,11 @@
     retain: 'keep', therefore: 'so', transmit: 'send', ultimately: 'finally', verify: 'check',
   };
   const TIPS = {
-    veryhard: 'Very hard sentence: split it into shorter ones.',
-    hard: 'Hard sentence: shorten or split it.',
-    adverb: 'Adverb: a stronger verb may replace it.',
-    passive: 'Passive voice: say who does the action.',
-    qualifier: 'Qualifier: cut it to sound sure.',
+    veryhard: 'Tangled: break this into two or three sentences.',
+    hard: 'Heavy: trim a clause or split it in two.',
+    adverb: '-ly word: could a sharper verb do this job?',
+    passive: 'Passive: name who acts, then the action.',
+    qualifier: 'Hedge: drop it and say it straight.',
   };
   // Unicode-aware word edges; \b is ASCII-only.
   const B = '(?<![\\p{L}\\p{N}])', E = '(?![\\p{L}\\p{N}])';
@@ -87,7 +87,7 @@
         const w = m[0];
         if (kind === 'adverb' && NOT_ADVERB.includes(w.toLowerCase())) continue;
         const tip = kind === 'simpler'
-          ? `Simpler word: try '${SIMPLER[w.toLowerCase().replace(/\s+/g, ' ')]}' instead of '${w}'.`
+          ? `Plainer: '${SIMPLER[w.toLowerCase().replace(/\s+/g, ' ')]}' does the same job as '${w}'.`
           : TIPS[kind];
         cands.push({ start: m.index, end: m.index + w.length, kind, tip });
       }
