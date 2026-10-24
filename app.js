@@ -11,6 +11,7 @@ A sentence with a pale green tint and a dotted underline is heavy, though not ho
 Short sentences are easy. Wavy underlines mark soft spots: -ly words like quickly, passive voice like "the report was written by the team", and hedges like perhaps. A sand tint with a double underline offers a plainer word, so when you want to utilize a fancy one, check the tip.`;
 
 const ROW_OF = { veryhard: 'veryhard', hard: 'hard', adverb: 'soft', passive: 'soft', qualifier: 'soft', simpler: 'simpler' };
+const ROWS = ['veryhard', 'hard', 'soft', 'simpler'];
 let s = { text: '', mode: 'review', hidden: [], target: 9, more: false, edited: false };
 let result = null, timer;
 
@@ -42,14 +43,28 @@ function paint(text, marks) {
   back.replaceChildren(frag);
 }
 
+// Grow with the text so the backdrop and textarea wrap identically (no inner scrollbar).
+function fit() {
+  box.style.height = 'auto';
+  box.style.height = box.scrollHeight + 'px';
+}
+
+// Keeps only known, well-typed fields from saved or imported state.
+const clean = (o) => ({
+  text: typeof o.text === 'string' ? o.text : '',
+  mode: o.mode === 'focus' ? 'focus' : 'review',
+  hidden: Array.isArray(o.hidden) ? o.hidden.filter((k) => ROWS.includes(k)) : [],
+  target: [6, 9, 12].includes(o.target) ? o.target : 9,
+  more: o.more === true,
+  edited: o.edited === true,
+});
+
 function analyze() {
   const text = box.value;
   result = Plainly.analyze(text, s.target);
-  const { stats: st, counts: c, sentences } = result;
+  const { stats: st, counts: c } = result;
   paint(text, result.marks);
-  // Grow with the text so the backdrop and textarea wrap identically (no inner scrollbar).
-  box.style.height = 'auto';
-  box.style.height = box.scrollHeight + 'px';
+  fit();
   const g = result.grade;
   $('.p-level-n').textContent = g == null ? 'Reading level —' : `Reading level ${g}`;
   $('.p-chip').textContent = g == null ? 'Empty' : g <= s.target ? 'Clear' : g <= s.target + 2 ? 'Fair' : 'Dense';
@@ -57,8 +72,8 @@ function analyze() {
   const secs = st.readingSeconds, rt = `${Math.floor(secs / 60)}m ${secs % 60}s`;
   $('.p-stats').replaceChildren(...[['Letters', st.letters], ['Characters', st.characters], ['Words', st.words],
     ['Sentences', st.sentences], ['Paragraphs', st.paragraphs], ['Reading time', rt]]
-    .map(([k, v]) => { const d = document.createElement('div'); d.innerHTML = '<dt></dt><dd></dd>'; d.firstChild.textContent = k; d.lastChild.textContent = v; return d; }));
-  for (const row of Object.keys(countLine)) $(`[data-row=${row}] .p-count`).textContent = countLine[row](c, sentences.length);
+    .map(([k, v]) => { const d = document.createElement('div'); const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = k; dd.textContent = v; d.append(dt, dd); return d; }));
+  for (const row of Object.keys(countLine)) $(`[data-row=${row}] .p-count`).textContent = countLine[row](c);
   $('#p-soft-text').textContent = `-ly words ${c.adverb} · passive ${c.passive} · hedges ${c.qualifier}`;
   cursor();
 }
@@ -77,7 +92,7 @@ function apply() {
   editor.classList.toggle('is-focus', s.mode === 'focus');
   wrap.classList.toggle('is-focus', s.mode === 'focus');
   $('.p-focus').setAttribute('aria-pressed', s.mode === 'focus');
-  for (const r of ['veryhard', 'hard', 'soft', 'simpler']) {
+  for (const r of ROWS) {
     const off = s.hidden.includes(r);
     editor.classList.toggle('hide-' + r, off);
     $(`[data-row=${r}] .p-eye`).setAttribute('aria-pressed', !off);
@@ -87,20 +102,20 @@ function apply() {
   analyze();
 }
 
-addEventListener('resize', () => result && analyze());
+new ResizeObserver(fit).observe(box);
 box.addEventListener('input', () => {
   s.text = box.value;
   s.edited = true;
   kit.store();
+  fit(); // now, so the backdrop height does not lag the 150 ms analysis
   clearTimeout(timer);
   timer = setTimeout(analyze, 150);
 });
-for (const ev of ['keyup', 'click']) box.addEventListener(ev, cursor);
 document.addEventListener('selectionchange', () => document.activeElement === box && cursor());
 
 const toggleFocus = () => { s.mode = s.mode === 'focus' ? 'review' : 'focus'; kit.store(); apply(); };
 $('.p-focus').onclick = toggleFocus;
-document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === '.') { e.preventDefault(); toggleFocus(); } });
+document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key === '.' && !$('#u-settings').open) { e.preventDefault(); toggleFocus(); } });
 document.querySelectorAll('.p-eye').forEach((b) => (b.onclick = () => {
   const r = b.closest('[data-row]').dataset.row;
   s.hidden = s.hidden.includes(r) ? s.hidden.filter((x) => x !== r) : [...s.hidden, r];
@@ -118,7 +133,7 @@ const kit = Unsubbed.app({
   id: 'plainly',
   name: 'Plainly',
   accept: '.txt,.md,.json',
-  load(saved) { s = { ...s, ...saved }; apply(); },
+  load(saved) { s = clean(saved); apply(); },
   state: () => s,
   exportFile() {
     const first = s.text.split('\n').find((l) => l.trim()) || '';
@@ -127,7 +142,7 @@ const kit = Unsubbed.app({
   },
   async importFile(file) {
     const text = await file.text();
-    if (file.name.toLowerCase().endsWith('.json')) s = { ...s, ...JSON.parse(text) };
+    if (file.name.toLowerCase().endsWith('.json')) s = clean(JSON.parse(text));
     else s = { ...s, text, edited: true };
     apply();
   },
