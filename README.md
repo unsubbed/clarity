@@ -1,12 +1,14 @@
-# App Name
+# Plainly
 
-**A free alternative to X.** Runs entirely in your browser. No account, no subscription, no tracking. Your files never leave your device.
+**A free alternative to Hemingway Editor.** Runs entirely in your browser. No account, no subscription, no tracking. Your files never leave your device.
 
-**Use it now:** https://unsubbed.github.io/app-name
+**Use it now:** https://unsubbed.github.io/plainly
 
 ## What it does
-- Feature one
-- Feature two
+- Marks tangled and heavy sentences, using a public readability formula
+- Flags soft spots (-ly words, passive voice, hedges) and suggests plainer words
+- Colors plus underline patterns, so marks read without color
+- Focus mode hides everything for distraction-free typing (Ctrl+. or Cmd+.)
 - Open and save your work as ordinary files on your own device
 
 ## Privacy
