@@ -50,14 +50,18 @@ function fit() {
 }
 
 // Keeps only known, well-typed fields from saved or imported state.
-const clean = (o) => ({
-  text: typeof o.text === 'string' ? o.text : '',
-  mode: o.mode === 'focus' ? 'focus' : 'review',
-  hidden: Array.isArray(o.hidden) ? o.hidden.filter((k) => ROWS.includes(k)) : [],
-  target: [6, 9, 12].includes(o.target) ? o.target : 9,
-  more: o.more === true,
-  edited: o.edited === true,
-});
+const clean = (o) => {
+  if (!o || typeof o !== 'object' || Array.isArray(o)) o = {};
+  return {
+    text: typeof o.text === 'string' ? o.text : '',
+    mode: o.mode === 'focus' ? 'focus' : 'review',
+    hidden: Array.isArray(o.hidden) ? o.hidden.filter((k) => ROWS.includes(k)) : [],
+    target: [6, 9, 12].includes(o.target) ? o.target : 9,
+    more: o.more === true,
+    // Text the user brought in counts as theirs, so the sample never replaces it.
+    edited: o.edited === true || (typeof o.text === 'string' && o.text.trim() !== ''),
+  };
+};
 
 function analyze() {
   const text = box.value;
@@ -111,6 +115,7 @@ box.addEventListener('input', () => {
   clearTimeout(timer);
   timer = setTimeout(analyze, 150);
 });
+for (const ev of ['keyup', 'pointerup']) box.addEventListener(ev, cursor); // some browsers skip selectionchange for textareas
 document.addEventListener('selectionchange', () => document.activeElement === box && cursor());
 
 const toggleFocus = () => { s.mode = s.mode === 'focus' ? 'review' : 'focus'; kit.store(); apply(); };
