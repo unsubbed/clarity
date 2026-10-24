@@ -1,6 +1,6 @@
-# Plainly — clean-room log
+# Unsubbed Clarity — clean-room log
 
-Incumbent: Hemingway Editor (Boondoggle Studio, LLC). Plainly is described only as "a free alternative to Hemingway Editor".
+Incumbent: Hemingway Editor (Boondoggle Studio, LLC). Unsubbed Clarity is described only as "a free alternative to Hemingway Editor".
 
 ## Sources used for SPEC.md
 | Date | Source | How | What we took |

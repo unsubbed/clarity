@@ -1,8 +1,10 @@
-# Plainly
+# Unsubbed Clarity
 
 **A free alternative to Hemingway Editor.** Runs entirely in your browser. No account, no subscription, no tracking. Your files never leave your device.
 
-**Use it now:** https://unsubbed.github.io/plainly
+**Use it now:** https://unsubbed.github.io/clarity
+
+![Unsubbed Clarity marking tangled sentences, soft spots and a plainer word](screenshots/desktop-light.png)
 
 ## What it does
 - Marks tangled and heavy sentences, using a public readability formula
@@ -15,7 +17,11 @@
 Everything happens on your device. The app makes no outside network requests: no analytics, no ads, no server. Your work is stored in this browser until you clear it, and you can save a copy at any time.
 
 ## Run it yourself
-It's a plain web page. Download this repository and open `index.html`, or serve the folder with any static web server.
+It's a plain web page with no build step. Download this repository and serve the folder with any static web server (for example `npx serve .`), then open the address it prints. To check the text engine, run `node analyze.test.mjs` (it prints `ok`).
+
+## Known issues
+- **Very long texts are slower.** At around 20,000 words, the page pauses for about half a second after each burst of typing while it re-checks the text.
+- **The tip box is untested in Firefox and Safari.** The tip that appears when your cursor sits on a marked word has only been tested in Chromium-based browsers (Chrome, Edge). It should work elsewhere, but if it doesn't update, please open an issue.
 
 ---
 

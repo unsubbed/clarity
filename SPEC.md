@@ -1,6 +1,6 @@
-# Plainly — SPEC
+# Unsubbed Clarity — SPEC
 
-**Plainly is a free alternative to Hemingway Editor.** It points out tangled sentences and soft or fussy words, right in the browser. No account, no AI, no network.
+**Unsubbed Clarity is a free alternative to Hemingway Editor.** It points out tangled sentences and soft or fussy words, right in the browser. No account, no AI, no network.
 
 This spec describes *behavior only*. It was written from public help pages and from watching the public website (see CLEANROOM.md). Builders work from this file alone.
 
@@ -85,7 +85,7 @@ Left to right: "Reading level N" + verdict chip · "N words" · **All counts** b
 
 ## 7. Files
 - **Open** accepts `.txt`, `.md`, `.json` (our own saved state). Text files replace the writing area content.
-- **Save** downloads a `.txt` named from the first line (up to 40 letters, digits, spaces or dashes); empty → `plainly.txt`.
+- **Save** downloads a `.txt` named from the first line (up to 40 letters, digits, spaces or dashes); empty → `clarity.txt`.
 
 ## 8. Not in scope (v1)
 Grammar/spelling checking, AI rewrites, rich formatting, Word/HTML import-export, accounts, sharing, document reports, multiple documents.

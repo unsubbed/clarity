@@ -1,4 +1,4 @@
-// Plainly analysis engine: classic script, no dependencies. Sets globalThis.Plainly.
+// Clarity analysis engine: classic script, no dependencies. Sets globalThis.Clarity.
 (() => {
   const ABBR = new Set(['mr.', 'mrs.', 'dr.', 'e.g.', 'i.e.', 'etc.', 'vs.']);
   const NOT_ADVERB = 'only family reply early supply holy belly ugly july italy apply rely fly ally bully jelly silly lonely lovely friendly daily weekly monthly yearly assembly butterfly emily sally kelly molly billy'.split(' ');
@@ -117,5 +117,5 @@
     };
   }
 
-  globalThis.Plainly = { ...globalThis.Plainly, analyze };
+  globalThis.Clarity = { ...globalThis.Clarity, analyze };
 })();

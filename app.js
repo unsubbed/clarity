@@ -68,7 +68,7 @@ const clean = (o) => {
 
 function analyze() {
   const text = box.value;
-  result = Plainly.analyze(text, s.target);
+  result = Clarity.analyze(text, s.target);
   painted = s.target + '\n' + text;
   const { stats: st, counts: c } = result;
   paint(text, result.marks);
@@ -145,15 +145,15 @@ settingsTarget.onchange = () => { s.target = +settingsTarget.value; kit.store();
 
 // Created last: load() runs inside this call and needs everything above.
 const kit = Unsubbed.app({
-  id: 'plainly',
-  name: 'Plainly',
+  id: 'clarity',
+  name: 'Unsubbed Clarity',
   accept: '.txt,.md,.json',
   load(saved) { s = clean(saved); apply(); },
   state: () => s,
   exportFile() {
     const first = s.text.split('\n').find((l) => l.trim()) || '';
     const name = first.replace(/[^\p{L}\p{N} -]/gu, '').trim().slice(0, 40).trim();
-    return { name: (name || 'plainly') + '.txt', data: s.text, type: 'text/plain' };
+    return { name: (name || 'clarity') + '.txt', data: s.text, type: 'text/plain' };
   },
   async importFile(file) {
     const text = await file.text();
@@ -162,6 +162,7 @@ const kit = Unsubbed.app({
     apply();
   },
 });
+document.title = 'Unsubbed Clarity'; // the kit would add a second "· Unsubbed"
 
 // First visit (no saved state) or never edited: show the sample.
 if (!s.edited) s.text = SAMPLE;

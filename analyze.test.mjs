@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 await import('./analyze.js');
-const { analyze } = globalThis.Plainly;
+const { analyze } = globalThis.Clarity;
 const txt = (t, m) => t.slice(m.start, m.end);
 const of = (r, kind) => r.marks.filter(m => m.kind === kind);
 

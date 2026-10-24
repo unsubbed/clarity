@@ -1,4 +1,4 @@
-/* Plainly: layout and mark looks. Each kind = tint + underline pattern, so it reads without color. Ink stays >= 4.5:1 on every tint. */
+/* Clarity: layout and mark looks. Each kind = tint + underline pattern, so it reads without color. Ink stays >= 4.5:1 on every tint. */
 :root {
   --m-tangled: #a7d0ba; --m-heavy: #eef5f0; --m-sand: #f0e2c6; --m-soft: #b4532a; --m-muted: #5f6a65;
   --serif: "Iowan Old Style", Charter, Georgia, "Times New Roman", serif;
@@ -74,3 +74,5 @@ mark mark { text-underline-offset: .22em; } /* word marks sit lower than the sen
 .p-tip.is-on { border-style: solid; border-color: var(--accent); color: var(--ink); }
 [hidden] { display: none !important; }
 @media (max-width: 899px) { .p-back, .p-text { font-size: 1.0625rem; padding: 1rem; } }
+/* The longer app name needs the header buttons a little tighter on phones. */
+@media (max-width: 420px) { .u-bar { gap: .25rem; } .u-bar .u-btn { width: 36px; min-height: 36px; } }
