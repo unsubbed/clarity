@@ -56,10 +56,7 @@ mark mark { text-underline-offset: .22em; } /* word marks sit lower than the sen
 .p-chip[data-v="dense"] { border-color: var(--m-soft); background: var(--m-soft); color: var(--surface); }
 .p-chip[data-v="empty"] { border-color: var(--line); color: var(--muted); }
 .p-focus { margin-left: auto; border-radius: 999px; }
-/* White on emerald is only ~3.4:1, so the light theme fills with a deeper shade (≥ 4.5:1); dark already uses dark ink. */
-.p-focus[aria-pressed="true"] { --fill: color-mix(in oklab, var(--accent) 72%, #000); background: var(--fill); border-color: var(--fill); color: var(--accent-ink); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .p-focus[aria-pressed="true"] { --fill: var(--accent); } }
-:root[data-theme="dark"] .p-focus[aria-pressed="true"] { --fill: var(--accent); }
+.p-focus[aria-pressed="true"] { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--accent-ink); }
 .p-stats { flex-basis: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: .5rem 1rem; margin: 0; }
 .p-stats div { display: grid; }
 .p-stats dt { color: var(--muted); font-size: .8125rem; } .p-stats dd { margin: 0; }
