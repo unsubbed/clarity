@@ -93,7 +93,7 @@ Grammar/spelling checking, AI rewrites, rich formatting, Word/HTML import-export
 ## 9. Acceptance checks
 - A 40-word single sentence of long words → Tangled.
 - "The ball was thrown by the boy." → passive soft spot.
-- "We will utilize it." → plainer word on "utilize", tip mentions "use".
+- "We will commence at noon." → plainer word on "commence", tip mentions "start".
 - Focus hides every mark; Review restores them. Ctrl+. toggles.
 - Each show/hide button hides only its kind and survives reload.
 - Reload keeps text, mode, toggles and target.

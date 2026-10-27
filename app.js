@@ -8,7 +8,7 @@ The marks show what to fix. Tangled sentences get a strong green tint and a soli
 
 A sentence with a pale green tint and a dotted underline is heavy, though not hopeless, since it asks your reader to hold several separate ideas at once.
 
-Short sentences are easy. Wavy underlines mark soft spots: -ly words like quickly, passive voice like "the report was written by the team", and hedges like perhaps. A sand tint with a double underline offers a plainer word, so when you want to utilize a fancy one, check the tip.`;
+Short sentences are easy. Wavy underlines mark soft spots: -ly words like quickly, passive voice like "the report was written by the team", and hedges like perhaps. A sand tint with a double underline offers a plainer word, so when you reach for a word like commence, check the tip.`;
 
 const ROW_OF = { veryhard: 'veryhard', hard: 'hard', adverb: 'soft', passive: 'soft', qualifier: 'soft', simpler: 'simpler' };
 const ROWS = ['veryhard', 'hard', 'soft', 'simpler'];
